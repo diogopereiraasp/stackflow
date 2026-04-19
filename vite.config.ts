@@ -1,12 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  // Ajuste o base para o nome do seu repositório se for usar GitHub Pages
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+  // Essencial para o GitHub Pages funcionar corretamente
   base: '/stackflow/',
   build: {
     minify: 'esbuild',
+    reportCompressedSize: false,
   }
 })
