@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { Modal } from '../ui/Modal';
-import { formatCurrency, cn } from '../../utils';
+import { Modal } from '../UI/Modal';
+import { formatCurrency } from '../../utils';
 import type { PokerSite } from '../../types/index';
 
 interface SessionFormProps {
