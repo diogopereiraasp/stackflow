@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { Modal } from '../UI/Modal';
+import { Modal } from '../ui/Modal';
 import { formatCurrency } from '../../utils';
 import type { PokerSite } from '../../types/index';
 

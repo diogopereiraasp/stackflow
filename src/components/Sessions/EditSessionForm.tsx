@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { Modal } from '../UI/Modal';
+import { Modal } from '../ui/Modal';
 import type { Session } from '../../types/index';
 
 interface EditSessionFormProps {

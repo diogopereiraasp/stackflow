@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../UI/Modal';
+import { Modal } from '../ui/Modal';
 
 interface SiteFormProps {
   onAdd: (name: string, balance: number) => void;
