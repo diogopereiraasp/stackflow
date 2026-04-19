@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { PokerSite, Session } from '../types';
+import type { PokerSite, Session } from '../types/index';
 
 const STORAGE_KEY = 'poker_bankroll_data';
 
