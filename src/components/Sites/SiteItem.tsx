@@ -31,7 +31,7 @@ export const SiteItem: React.FC<SiteItemProps> = ({ site, onCashout, onDelete })
         </button>
         <button 
           onClick={() => onDelete(site.id)}
-          className="p-2 text-zinc-600 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+          className="p-2 text-zinc-600 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
           title="Remover Site"
         >
           <Trash2 size={16} />

@@ -19,7 +19,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ session, onEdit, onDel
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex gap-1">
             {session.type !== 'cashout' && (
               <button 
                 onClick={() => onEdit(session)}
