@@ -54,9 +54,15 @@ export default function App() {
       selectedSites.length === 0 || selectedSites.includes(s.siteId)
     );
 
+    console.log(`[DEBUG] Sessões totais: ${sessions.length}, Filtradas: ${filtered.length}`);
+
     return [...filtered].sort((a, b) => {
-      if (sortBy === 'date_desc') return b.timestamp - a.timestamp;
-      if (sortBy === 'date_asc') return a.timestamp - b.timestamp;
+      if (sortBy === 'date_desc') {
+        return (b.timestamp - a.timestamp) || b.id.localeCompare(a.id);
+      }
+      if (sortBy === 'date_asc') {
+        return (a.timestamp - b.timestamp) || a.id.localeCompare(b.id);
+      }
       if (sortBy === 'profit_desc') return b.profit - a.profit;
       if (sortBy === 'profit_asc') return a.profit - b.profit;
       return 0;
@@ -129,8 +135,16 @@ export default function App() {
 
         <div className="space-y-3">
           {processedSessions.length === 0 ? (
-            <div className="p-8 border-2 border-dashed border-zinc-800 rounded-3xl text-center text-zinc-600">
-               Nenhum registro encontrado.
+            <div className="p-8 border-2 border-dashed border-zinc-800 rounded-3xl text-center">
+               <p className="text-zinc-600 mb-2">Nenhum registro encontrado.</p>
+               {sessions.length > 0 && (
+                 <button 
+                   onClick={() => { setSelectedSites([]); setSortBy('date_desc'); }}
+                   className="text-xs font-bold text-primary hover:underline"
+                 >
+                   Limpar todos os filtros
+                 </button>
+               )}
             </div>
           ) : (
             <>
