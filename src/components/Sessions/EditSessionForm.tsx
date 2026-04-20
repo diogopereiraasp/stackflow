@@ -28,8 +28,8 @@ export const EditSessionForm: React.FC<EditSessionFormProps> = ({
     e.preventDefault();
     if (isNaN(Number(hands)) || isNaN(Number(balance))) return;
     
-    const selectedDate = new Date(date);
-    selectedDate.setHours(12, 0, 0, 0);
+    const [year, month, day] = date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day, 12, 0, 0, 0);
     
     onUpdate(session.id, Number(hands), Number(balance), selectedDate.getTime());
     onClose();

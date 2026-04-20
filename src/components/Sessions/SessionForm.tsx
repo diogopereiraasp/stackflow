@@ -36,8 +36,8 @@ export const SessionForm: React.FC<SessionFormProps> = ({
     e.preventDefault();
     if (!siteId || isNaN(Number(hands)) || isNaN(Number(balance))) return;
     
-    const selectedDate = new Date(date);
-    selectedDate.setHours(12, 0, 0, 0); 
+    const [year, month, day] = date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day, 12, 0, 0, 0); 
     
     onRegister(siteId, Number(hands), Number(balance), selectedDate.getTime());
     onClose();
