@@ -8,8 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  // Essencial para o GitHub Pages funcionar corretamente
-  base: '/stackflow/',
+  // Comentado para funcionar no Vercel/Netlify (que usam a raiz /)
+  // base: '/stackflow/',
   build: {
     minify: 'esbuild',
     reportCompressedSize: false,
