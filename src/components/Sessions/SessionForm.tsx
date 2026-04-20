@@ -20,7 +20,13 @@ export const SessionForm: React.FC<SessionFormProps> = ({
   const [siteId, setSiteId] = useState(sites[0]?.id || '');
   const [hands, setHands] = useState('');
   const [balance, setBalance] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
   const [isEditingInitial, setIsEditingInitial] = useState(false);
   const [newInitialBalance, setNewInitialBalance] = useState('');
 

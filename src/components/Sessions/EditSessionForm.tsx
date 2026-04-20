@@ -16,7 +16,13 @@ export const EditSessionForm: React.FC<EditSessionFormProps> = ({
 }) => {
   const [hands, setHands] = useState(session.hands.toString());
   const [balance, setBalance] = useState(session.newBalance.toString());
-  const [date, setDate] = useState(new Date(session.timestamp).toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => {
+    const d = new Date(session.timestamp);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
