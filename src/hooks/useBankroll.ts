@@ -5,13 +5,23 @@ const STORAGE_KEY = 'poker_bankroll_data';
 
 export const useBankroll = () => {
   const [sites, setSites] = useState<PokerSite[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).sites : [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved).sites || [] : [];
+    } catch (e) {
+      console.error("[StackFlow] Erro ao ler sites do localStorage:", e);
+      return [];
+    }
   });
 
   const [sessions, setSessions] = useState<Session[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).sessions : [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved).sessions || [] : [];
+    } catch (e) {
+      console.error("[StackFlow] Erro ao ler sessões do localStorage:", e);
+      return [];
+    }
   });
 
   useEffect(() => {
@@ -29,7 +39,11 @@ export const useBankroll = () => {
 
   const registerSession = (siteId: string, hands: number, newBalance: number, timestamp = Date.now()) => {
     const site = sites.find(s => s.id === siteId);
-    if (!site) return;
+    if (!site) {
+      console.error("[StackFlow] Erro: Site não encontrado para o registro.", { siteId, sites });
+      alert("Erro ao encontrar o site selecionado.");
+      return;
+    }
 
     const session: Session = {
       id: crypto.randomUUID(),
@@ -42,6 +56,8 @@ export const useBankroll = () => {
       timestamp,
       type: 'session',
     };
+
+    console.log("[StackFlow] Registrando Sessão:", session);
 
     setSessions(prev => [session, ...prev]);
     setSites(prev => prev.map(s => s.id === siteId ? { ...s, balance: newBalance } : s));

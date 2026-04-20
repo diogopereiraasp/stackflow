@@ -171,7 +171,11 @@ export default function App() {
       {showSessionForm && (
         <SessionForm 
           sites={sites} 
-          onRegister={registerSession} 
+          onRegister={(...args) => {
+            registerSession(...args);
+            setSelectedSites([]);
+            setCurrentPage(1);
+          }} 
           onUpdateBalance={updateSiteBalance}
           onClose={() => setShowSessionForm(false)} 
         />
