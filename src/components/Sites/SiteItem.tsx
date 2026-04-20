@@ -17,7 +17,7 @@ export const SiteItem: React.FC<SiteItemProps> = ({ site, onCashout, onDelete })
         <span className="font-mono text-zinc-400 text-sm">{formatCurrency(site.balance)}</span>
       </div>
       <div className="flex items-center gap-2">
-        <button 
+        <button
           onClick={() => {
             const amount = prompt(`Quanto deseja sacar de ${site.name}?`, site.balance.toString());
             if (amount && !isNaN(Number(amount))) {
@@ -29,9 +29,9 @@ export const SiteItem: React.FC<SiteItemProps> = ({ site, onCashout, onDelete })
         >
           <Download size={14} className="rotate-180" /> Sacar
         </button>
-        <button 
+        <button
           onClick={() => onDelete(site.id)}
-          className="p-2 text-zinc-600 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
+          className="p-2 text-zinc-600 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
           title="Remover Site"
         >
           <Trash2 size={16} />

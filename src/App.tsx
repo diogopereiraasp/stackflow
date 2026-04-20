@@ -39,6 +39,15 @@ export default function App() {
   const [selectedSites, setSelectedSites] = useState<string[]>([]);
   const itemsPerPage = 10;
 
+  const siteProfits = useMemo(() => {
+    return sites.reduce((acc, site) => {
+      acc[site.id] = sessions
+        .filter(s => s.siteId === site.id && s.type !== 'cashout')
+        .reduce((sum, s) => sum + s.profit, 0);
+      return acc;
+    }, {} as Record<string, number>);
+  }, [sites, sessions]);
+
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -110,6 +119,7 @@ export default function App() {
               <SiteItem 
                 key={site.id} 
                 site={site} 
+                profit={siteProfits[site.id] || 0}
                 onCashout={registerCashout} 
                 onDelete={deleteSite} 
               />
