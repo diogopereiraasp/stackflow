@@ -126,6 +126,13 @@ export default function App() {
     return (stats.totalProfit / bbValue) / (stats.totalHands / 100);
   }, [stats.totalProfit, stats.totalHands, stake]);
 
+  const periodBb100 = useMemo(() => {
+    if (periodStats.hands === 0) return 0;
+    const bbValue = parseFloat(stake) / 100;
+    if (isNaN(bbValue) || bbValue === 0) return 0;
+    return (periodStats.profit / bbValue) / (periodStats.hands / 100);
+  }, [periodStats, stake]);
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-8 pb-32 min-h-screen">
       <Header 
@@ -135,6 +142,7 @@ export default function App() {
         stake={stake}
         onStakeChange={setStake}
         bb100={bb100}
+        totalHands={stats.totalHands}
       />
 
       <BankrollStats {...stats} bb100={bb100} />
@@ -191,6 +199,7 @@ export default function App() {
           customRange={customRange}
           onCustomRangeChange={setCustomRange}
           periodStats={periodStats}
+          periodBb100={periodBb100}
         />
 
         <div className="space-y-3">

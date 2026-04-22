@@ -15,6 +15,7 @@ interface HistoryFiltersProps {
   customRange: { start: string; end: string };
   onCustomRangeChange: (range: { start: string; end: string }) => void;
   periodStats: { profit: number; hands: number };
+  periodBb100: number;
 }
 
 export const HistoryFilters: React.FC<HistoryFiltersProps> = ({
@@ -28,6 +29,7 @@ export const HistoryFilters: React.FC<HistoryFiltersProps> = ({
   customRange,
   onCustomRangeChange,
   periodStats,
+  periodBb100,
 }) => {
   const timeOptions = [
     { id: 'day', label: 'Hoje' },
@@ -58,6 +60,16 @@ export const HistoryFilters: React.FC<HistoryFiltersProps> = ({
                 {periodStats.profit >= 0 ? '↑' : '↓'}
               </span>
             )}
+          </div>
+        </div>
+
+        <div className="text-center">
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">Winrate</p>
+          <div className={cn(
+            "text-lg font-black tabular-nums",
+            periodBb100 >= 0 ? "text-green-400" : "text-red-400"
+          )}>
+            {periodBb100.toFixed(1)} <span className="text-[10px] font-bold opacity-50">bb/100</span>
           </div>
         </div>
         

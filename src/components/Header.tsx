@@ -9,10 +9,11 @@ interface HeaderProps {
   stake: string;
   onStakeChange: (stake: string) => void;
   bb100: number;
+  totalHands: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
-  onExport, onImport, onReset, stake, onStakeChange, bb100 
+  onExport, onImport, onReset, stake, onStakeChange, bb100, totalHands 
 }) => {
   return (
     <header className="flex justify-between items-center mb-8 gap-4">
@@ -20,27 +21,37 @@ export const Header: React.FC<HeaderProps> = ({
         Stack<span className="text-white">Flow</span>
       </h1>
 
-      <div className="flex items-center gap-2 flex-1 justify-end mr-2">
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <span className="text-[10px] font-bold text-zinc-500 uppercase">Stake</span>
-          <div className="flex items-center text-xs font-bold">
+      <div className="flex items-center gap-6 flex-1 justify-end mr-6">
+        <div className="flex flex-col items-center">
+          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 text-center w-full">Stake</span>
+          <div className="flex items-center text-xs font-bold bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-lg">
             <span className="text-primary mr-0.5">NL</span>
             <input 
               type="number"
               value={stake}
               onChange={(e) => onStakeChange(e.target.value)}
-              className="w-10 bg-transparent focus:outline-none text-zinc-200"
+              className="w-8 bg-transparent focus:outline-none text-zinc-200"
             />
           </div>
         </div>
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-primary/5 border border-primary/10 rounded-lg">
-          <Gauge size={14} className="text-primary" />
-          <span className={cn(
-            "text-xs font-black tabular-nums",
+
+        <div className="flex flex-col items-center">
+          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Winrate</span>
+          <div className={cn(
+            "text-base font-black tabular-nums flex items-center gap-1",
             bb100 >= 0 ? "text-green-400" : "text-red-400"
           )}>
-            {bb100.toFixed(1)} <span className="text-[9px] font-bold opacity-70">bb/100</span>
-          </span>
+            <Gauge size={12} className="opacity-70" />
+            {bb100.toFixed(1)} <span className="text-[9px] font-bold opacity-50">bb/100</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Total Mãos</span>
+          <div className="text-base font-black text-zinc-200 flex items-center gap-1">
+            <span className="text-primary opacity-70">#</span>
+            {totalHands.toLocaleString()}
+          </div>
         </div>
       </div>
       
