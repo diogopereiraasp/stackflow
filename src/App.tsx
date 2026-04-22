@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Layers, History } from 'lucide-react';
+import { startOfDay, startOfMonth, subDays } from 'date-fns';
 import { useBankrollStore } from './store/BankrollContext';
 import { Header } from './components/Header';
 import { BankrollStats } from './components/BankrollStats';
@@ -37,7 +38,14 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('date_desc');
   const [selectedSites, setSelectedSites] = useState<string[]>([]);
+  const [timeFilter, setTimeFilter] = useState<'all' | 'day' | 'week' | 'month' | 'custom'>('day');
+  const [customRange, setCustomRange] = useState({ start: '', end: '' });
+  const [stake, setStake] = useState(() => localStorage.getItem('poker_stake') || '20');
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    localStorage.setItem('poker_stake', stake);
+  }, [stake]);
 
   const siteProfits = useMemo(() => {
     return sites.reduce((acc, site) => {
@@ -59,9 +67,26 @@ export default function App() {
 
   // Logic for filtered and sorted sessions
   const processedSessions = useMemo(() => {
-    const filtered = sessions.filter(s => 
-      selectedSites.length === 0 || selectedSites.includes(s.siteId)
-    );
+    const now = new Date();
+    
+    const filtered = sessions.filter(s => {
+      const siteMatch = selectedSites.length === 0 || selectedSites.includes(s.siteId);
+      
+      let timeMatch = true;
+      if (timeFilter === 'day') {
+        timeMatch = s.timestamp >= startOfDay(now).getTime();
+      } else if (timeFilter === 'week') {
+        timeMatch = s.timestamp >= subDays(now, 7).getTime();
+      } else if (timeFilter === 'month') {
+        timeMatch = s.timestamp >= startOfMonth(now).getTime();
+      } else if (timeFilter === 'custom') {
+        const start = customRange.start ? startOfDay(new Date(customRange.start)).getTime() : 0;
+        const end = customRange.end ? new Date(new Date(customRange.end).setHours(23, 59, 59, 999)).getTime() : Infinity;
+        timeMatch = s.timestamp >= start && s.timestamp <= end;
+      }
+
+      return siteMatch && timeMatch;
+    });
 
     console.log(`[DEBUG] Sessões totais: ${sessions.length}, Filtradas: ${filtered.length}`);
 
@@ -76,7 +101,7 @@ export default function App() {
       if (sortBy === 'profit_asc') return a.profit - b.profit;
       return 0;
     });
-  }, [sessions, selectedSites, sortBy]);
+  }, [sessions, selectedSites, sortBy, timeFilter, customRange]);
 
   const totalPages = Math.ceil(processedSessions.length / itemsPerPage);
   const currentSessions = processedSessions.slice(
@@ -84,15 +109,35 @@ export default function App() {
     currentPage * itemsPerPage
   );
 
+  const periodStats = useMemo(() => {
+    return processedSessions.reduce((acc, s) => {
+      if (s.type !== 'cashout') {
+        acc.profit += s.profit;
+        acc.hands += s.hands;
+      }
+      return acc;
+    }, { profit: 0, hands: 0 });
+  }, [processedSessions]);
+
+  const bb100 = useMemo(() => {
+    if (stats.totalHands === 0) return 0;
+    const bbValue = parseFloat(stake) / 100;
+    if (isNaN(bbValue) || bbValue === 0) return 0;
+    return (stats.totalProfit / bbValue) / (stats.totalHands / 100);
+  }, [stats.totalProfit, stats.totalHands, stake]);
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-8 pb-32 min-h-screen">
       <Header 
         onExport={exportData} 
         onImport={handleImport} 
         onReset={resetData} 
+        stake={stake}
+        onStakeChange={setStake}
+        bb100={bb100}
       />
 
-      <BankrollStats {...stats} />
+      <BankrollStats {...stats} bb100={bb100} />
 
       {/* Sites Section */}
       <section className="mb-8">
@@ -141,6 +186,11 @@ export default function App() {
           onSelectSites={(s) => { setSelectedSites(s); setCurrentPage(1); }}
           sortBy={sortBy}
           onSortChange={(s) => { setSortBy(s); setCurrentPage(1); }}
+          timeFilter={timeFilter}
+          onTimeFilterChange={(f) => { setTimeFilter(f); setCurrentPage(1); }}
+          customRange={customRange}
+          onCustomRangeChange={setCustomRange}
+          periodStats={periodStats}
         />
 
         <div className="space-y-3">

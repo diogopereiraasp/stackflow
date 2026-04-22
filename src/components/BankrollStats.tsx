@@ -1,18 +1,21 @@
 import React from 'react';
-import { Wallet, TrendingUp, TrendingDown, Target } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Target, Gauge } from 'lucide-react';
 import { formatCurrency, cn } from '../utils';
 
 interface StatsProps {
   totalBankroll: number;
   totalProfit: number;
   totalHands: number;
+  bb100: number;
 }
 
-export const BankrollStats: React.FC<StatsProps> = ({ totalBankroll, totalProfit, totalHands }) => {
+export const BankrollStats: React.FC<StatsProps> = ({ 
+  totalBankroll, totalProfit, totalHands, bb100 
+}) => {
   return (
     <div className="grid grid-cols-1 gap-4 mb-8">
       <div className="card bg-gradient-to-br from-zinc-800 to-zinc-900 border-none relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+        <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-white">
           <Wallet size={80} />
         </div>
         <p className="text-zinc-400 font-medium mb-1 flex items-center gap-2">
@@ -24,7 +27,7 @@ export const BankrollStats: React.FC<StatsProps> = ({ totalBankroll, totalProfit
         )}>
           {formatCurrency(totalBankroll)}
         </h2>
-        <div className="mt-4 flex gap-6">
+        <div className="mt-4 flex flex-wrap gap-x-8 gap-y-4">
           <div>
             <p className="text-xs text-zinc-500 uppercase tracking-wider font-bold mb-1">Lucro Geral</p>
             <p className={cn(
@@ -33,6 +36,16 @@ export const BankrollStats: React.FC<StatsProps> = ({ totalBankroll, totalProfit
             )}>
               {totalProfit >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
               {formatCurrency(totalProfit)}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-zinc-500 uppercase tracking-wider font-bold mb-1">Winrate</p>
+            <p className={cn(
+              "text-lg font-bold flex items-center gap-1",
+              bb100 >= 0 ? "text-green-400" : "text-red-400"
+            )}>
+              <Gauge size={16} />
+              {bb100.toFixed(2)} <span className="text-xs opacity-50">bb/100</span>
             </p>
           </div>
           <div>
