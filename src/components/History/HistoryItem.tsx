@@ -20,7 +20,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ session, onEdit, onDel
         
         <div className="flex items-center gap-2">
           <div className="flex gap-1">
-            {session.type !== 'cashout' && (
+            {session.type !== 'cashout' && session.type !== 'deposit' && (
               <button 
                 onClick={() => onEdit(session)}
                 className="p-1.5 text-zinc-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
@@ -40,16 +40,16 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ session, onEdit, onDel
 
           <div className={cn(
             "px-3 py-1 rounded-full text-xs font-black shrink-0",
-            session.type === 'cashout' 
+            (session.type === 'cashout' || session.type === 'deposit') 
               ? "bg-zinc-800 text-zinc-400"
               : session.profit >= 0 ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
           )}>
-            {session.type === 'cashout' ? 'SAQUE' : (session.profit >= 0 ? '+' : '') + formatCurrency(session.profit)}
+            {session.type === 'cashout' ? 'SAQUE' : session.type === 'deposit' ? 'DEPÓSITO' : (session.profit >= 0 ? '+' : '') + formatCurrency(session.profit)}
           </div>
         </div>
       </div>
       <div className="flex justify-between items-center text-xs text-zinc-400">
-        <span>{session.type === 'cashout' ? 'Retirada de fundos' : `${session.hands.toLocaleString()} mãos`}</span>
+        <span>{session.type === 'cashout' ? 'Retirada de fundos' : session.type === 'deposit' ? 'Adição de fundos' : `${session.hands.toLocaleString()} mãos`}</span>
         <div className="flex items-center gap-2">
            <span className="opacity-50 line-through">{formatCurrency(session.oldBalance)}</span>
            <span className="text-zinc-200">→ {formatCurrency(session.newBalance)}</span>

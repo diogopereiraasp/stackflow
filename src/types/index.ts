@@ -13,7 +13,7 @@ export interface Session {
   newBalance: number;
   profit: number;
   timestamp: number;
-  type?: 'session' | 'cashout';
+  type?: 'session' | 'cashout' | 'deposit';
 }
 
 export interface BankrollData {

@@ -20,6 +20,7 @@ export default function App() {
     addSite, 
     registerSession,
     registerCashout,
+    registerDeposit,
     updateSession,
     updateSiteBalance,
     deleteSession,
@@ -50,7 +51,7 @@ export default function App() {
   const siteProfits = useMemo(() => {
     return sites.reduce((acc, site) => {
       acc[site.id] = sessions
-        .filter(s => s.siteId === site.id && s.type !== 'cashout')
+        .filter(s => s.siteId === site.id && s.type !== 'cashout' && s.type !== 'deposit')
         .reduce((sum, s) => sum + s.profit, 0);
       return acc;
     }, {} as Record<string, number>);
@@ -111,7 +112,7 @@ export default function App() {
 
   const periodStats = useMemo(() => {
     return processedSessions.reduce((acc, s) => {
-      if (s.type !== 'cashout') {
+      if (s.type !== 'cashout' && s.type !== 'deposit') {
         acc.profit += s.profit;
         acc.hands += s.hands;
       }
@@ -174,6 +175,7 @@ export default function App() {
                 site={site} 
                 profit={siteProfits[site.id] || 0}
                 onCashout={registerCashout} 
+                onDeposit={registerDeposit}
                 onDelete={deleteSite} 
               />
             ))

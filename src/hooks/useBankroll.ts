@@ -83,6 +83,38 @@ export const useBankroll = () => {
     setSites(prev => prev.map(s => s.id === siteId ? { ...s, balance: s.balance - amount } : s));
   };
 
+  const registerDeposit = (siteId: string, amount: number, timestamp = Date.now()) => {
+    console.log("[StackFlow] Tentando registrar depósito:", { siteId, amount });
+    const site = sites.find(s => s.id === siteId);
+    
+    if (!site) {
+      console.error("[StackFlow] Site não encontrado:", siteId);
+      return;
+    }
+
+    if (amount <= 0) {
+      console.warn("[StackFlow] Valor de depósito inválido:", amount);
+      return;
+    }
+
+    const session: Session = {
+      id: crypto.randomUUID(),
+      siteId,
+      siteName: site.name,
+      hands: 0,
+      oldBalance: site.balance,
+      newBalance: site.balance + amount,
+      profit: 0,
+      timestamp,
+      type: 'deposit',
+    };
+
+    console.log("[StackFlow] Depósito criado:", session);
+
+    setSessions(prev => [session, ...prev]);
+    setSites(prev => prev.map(s => s.id === siteId ? { ...s, balance: s.balance + amount } : s));
+  };
+
   const updateSession = (sessionId: string, hands: number, newBalance: number, timestamp: number) => {
     const session = sessions.find(s => s.id === sessionId);
     if (!session) return;
@@ -153,13 +185,13 @@ export const useBankroll = () => {
 
   const stats = useMemo(() => ({
     totalBankroll: sites.reduce((acc, s) => acc + s.balance, 0),
-    totalProfit: sessions.reduce((acc, s) => acc + (s.type === 'cashout' ? 0 : s.profit), 0),
+    totalProfit: sessions.reduce((acc, s) => acc + (s.type === 'cashout' || s.type === 'deposit' ? 0 : s.profit), 0),
     totalHands: sessions.reduce((acc, s) => acc + s.hands, 0),
   }), [sites, sessions]);
 
   return {
     sites, sessions, stats,
-    addSite, registerSession, registerCashout, updateSession,
+    addSite, registerSession, registerCashout, registerDeposit, updateSession,
     updateSiteBalance, deleteSession, deleteSite,
     exportData, importData, resetData,
   };

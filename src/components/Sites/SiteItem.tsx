@@ -7,10 +7,11 @@ interface SiteItemProps {
   site: PokerSite;
   profit: number;
   onCashout: (siteId: string, amount: number) => void;
+  onDeposit: (siteId: string, amount: number) => void;
   onDelete: (siteId: string) => void;
 }
 
-export const SiteItem: React.FC<SiteItemProps> = ({ site, profit, onCashout, onDelete }) => {
+export const SiteItem: React.FC<SiteItemProps> = ({ site, profit, onCashout, onDeposit, onDelete }) => {
   return (
     <div className="card py-3 px-4 flex justify-between items-center bg-zinc-900/50 group">
       <div className="flex flex-col">
@@ -25,9 +26,31 @@ export const SiteItem: React.FC<SiteItemProps> = ({ site, profit, onCashout, onD
       <div className="flex items-center gap-2">
         <button 
           onClick={() => {
-            const amount = prompt(`Quanto deseja sacar de ${site.name}?`, site.balance.toString());
-            if (amount && !isNaN(Number(amount))) {
-              onCashout(site.id, Number(amount));
+            const rawAmount = prompt(`Quanto deseja depositar em ${site.name}?`, "0");
+            if (rawAmount) {
+              const amount = Number(rawAmount.replace(',', '.'));
+              if (!isNaN(amount) && amount > 0) {
+                onDeposit(site.id, amount);
+              } else {
+                alert("Por favor, insira um valor válido maior que zero.");
+              }
+            }
+          }}
+          className="p-2 text-xs font-bold text-success hover:bg-success/10 rounded-lg transition-colors flex items-center gap-1"
+          title="Depositar Saldo"
+        >
+          <Download size={14} /> Depositar
+        </button>
+        <button 
+          onClick={() => {
+            const rawAmount = prompt(`Quanto deseja sacar de ${site.name}?`, site.balance.toString());
+            if (rawAmount) {
+              const amount = Number(rawAmount.replace(',', '.'));
+              if (!isNaN(amount) && amount > 0) {
+                onCashout(site.id, amount);
+              } else {
+                alert("Por favor, insira um valor válido maior que zero.");
+              }
             }
           }}
           className="p-2 text-xs font-bold text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center gap-1"
